@@ -1,15 +1,39 @@
 import React from "react";
 import styled from "styled-components";
 import { AiFillStar } from "react-icons/ai";
-
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { SingleProduct } from "../Api/Api";
+import pic from "../Assets/1.png";
+import { UseAppDispach, useAppSelector } from "../Global/Store";
+import { addToCart } from "../Global/ReduxState";
 const SinglePage = () => {
+	const { id } = useParams();
+	const dispatch = UseAppDispach();
+	const readCart = useAppSelector((state) => state.myReducer.cart);
+
+	const readSingleItem = readCart.filter((el) => el._id === id);
+
+	console.log(readSingleItem);
+
+	const getData = useQuery({
+		queryKey: ["products", id],
+		queryFn: () => {
+			return SingleProduct(id);
+		},
+	});
+
+	console.log(getData);
+
 	return (
 		<Container>
-			<First></First>
+			<First>
+				<img src={pic} />
+			</First>
 			<Second>
-				<h2>Heavy Weight Shoes</h2>
+				<h2>{getData?.data?.data?.title}</h2>
 				<PriceHold>
-					<Price>$30.00</Price>
+					<Price>${getData?.data?.data?.price}</Price>
 					<Ratting>
 						<AiFillStar
 							style={{
@@ -23,22 +47,29 @@ const SinglePage = () => {
 				<Holder>
 					<ButtonHold>
 						<But>-</But>
-						<Count>0</Count>
-						<But style={{ marginLeft: "20px" }}>+</But>
+						<Count>{readSingleItem[0]?.cartQuantity}</Count>
+						<But
+							disabled={
+								readSingleItem[0]?.cartQuantity === getData?.data?.data.quantity
+							}
+							onClick={() => {
+								dispatch(addToCart(getData?.data?.data));
+							}}
+							style={{ marginLeft: "20px" }}>
+							+
+						</But>
 					</ButtonHold>
-					<MainButton>Add To Cart</MainButton>
+					<MainButton
+						onClick={() => {
+							dispatch(addToCart(getData?.data?.data));
+						}}>
+						Add To Cart
+					</MainButton>
 				</Holder>
 
 				<DescHold>Description</DescHold>
 				<br />
-				<span style={{ marginTop: "10px" }}>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium
-					et reiciendis, sit non dolor, aspernatur eligendi harum incidunt
-					quidem pariatur iusto veniam minus inventore autem soluta id libero,
-					quod accusamus a iste. Delectus iure facere quis sed quibusdam
-					doloribus, nobis voluptate consequatur minima, natus voluptatibus nam
-					consectetur, sint libero soluta?
-				</span>
+				<span style={{ marginTop: "10px" }}>{getData?.data?.data?.desc}</span>
 			</Second>
 		</Container>
 	);
@@ -59,7 +90,7 @@ const ButtonHold = styled.div`
 	align-items: center;
 `;
 
-const But = styled.div`
+const But = styled.button`
 	height: 40px;
 	width: 40px;
 	border-radius: 50%;
@@ -69,6 +100,7 @@ const But = styled.div`
 	align-items: center;
 	font-weight: 600;
 	font-size: 25px;
+	border: none;
 	box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
 		rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 	margin-right: 20px;
@@ -140,6 +172,9 @@ const First = styled.div`
 	background-color: #f1f1f1;
 	border-radius: 5px;
 	margin-right: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 `;
 
 const Container = styled.div`

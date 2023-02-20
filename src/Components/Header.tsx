@@ -4,16 +4,25 @@ import { BsSearch } from "react-icons/bs";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import log from "./Assets/logo.png";
 import { NavLink } from "react-router-dom";
+import { UseAppDispach, useAppSelector } from "./Global/Store";
+import { logoutUser } from "./Global/ReduxState";
 
 const Header = () => {
+	const userData = useAppSelector((state) => state.myReducer.currentUser);
+	const dispatch = UseAppDispach();
+
 	return (
 		<Container>
 			<Logo src={log} />
 			<NavHold>
-				<Nav>Home</Nav>
+				<NavLink to='/'>
+					<Nav>Home</Nav>
+				</NavLink>
 				<Nav>About</Nav>
 				<Nav>Services</Nav>
-				<Nav>Products</Nav>
+				<NavLink to='/product'>
+					<Nav>Products</Nav>
+				</NavLink>
 			</NavHold>
 
 			<IconsHold>
@@ -24,9 +33,19 @@ const Header = () => {
 					<AiOutlineShoppingCart />
 					<Count>0</Count>
 				</Icon>
-				<NavLink to='/register'>
-					<Button>Get Started</Button>
-				</NavLink>
+				{userData?.name ? (
+					<NavLink
+						onClick={() => {
+							dispatch(logoutUser());
+						}}
+						to='/'>
+						<Button>Logout</Button>
+					</NavLink>
+				) : (
+					<NavLink to='/register'>
+						<Button>Get Started</Button>
+					</NavLink>
+				)}
 				{/* <Icon>Search</Icon> */}
 			</IconsHold>
 		</Container>

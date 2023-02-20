@@ -16,3 +16,12 @@ export const CreateUser = async ({ name, email, password }: UserData) => {
 		})
 		.then((res) => res.data);
 };
+
+export const AllProduct = async () => {
+	return await axios.get(`${Endpoint}/api/products`).then((res) => res.data);
+};
+export const SingleProduct = async (id: any) => {
+	return await axios
+		.get(`${Endpoint}/api/products/${id}`)
+		.then((res) => res.data);
+};

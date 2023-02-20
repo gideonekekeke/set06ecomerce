@@ -5,10 +5,23 @@ interface UserData {
 	name: string;
 	email: string;
 	password: string;
+	_id: string;
+}
+
+interface CartData {
+	title: string;
+	desc: string;
+	price: number;
+	category: string;
+	_id: string;
+	cartQuantity: number;
 }
 
 const initialState = {
-	currentUser: {} || null,
+	currentUser: {} as UserData | null,
+	cart: [] as Array<CartData>,
+	totalPrice: 0,
+	totalQuantity: 0,
 };
 
 const ReduxState = createSlice({
@@ -18,9 +31,34 @@ const ReduxState = createSlice({
 		loginUser: (state, { payload }: PayloadAction<UserData>) => {
 			state.currentUser = payload;
 		},
+
+		logoutUser: (state) => {
+			state.currentUser = null;
+		},
+
+		addToCart: (state, { payload }: PayloadAction<CartData>) => {
+			const check = state.cart.findIndex((el) => el._id === payload._id);
+
+			if (check >= 0) {
+				state.cart[check].cartQuantity += 1;
+			} else {
+				state.cart.push({
+					...payload,
+					cartQuantity: 1,
+				});
+			}
+
+			state.totalQuantity += 1;
+			state.totalPrice +=
+				// state.cart[check].cartQuantity * state.cart[check].price;
+				state.totalPrice = state.cart.reduce(
+					(accc, next) => accc + next.cartQuantity * accc + next.price,
+					0,
+				);
+		},
 	},
 });
 
-export const { loginUser } = ReduxState.actions;
+export const { loginUser, logoutUser, addToCart } = ReduxState.actions;
 
 export default ReduxState.reducer;
