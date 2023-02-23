@@ -6,10 +6,17 @@ import log from "./Assets/logo.png";
 import { NavLink } from "react-router-dom";
 import { UseAppDispach, useAppSelector } from "./Global/Store";
 import { logoutUser } from "./Global/ReduxState";
+import { Link } from "react-router-dom";
 
 const Header = () => {
 	const userData = useAppSelector((state) => state.myReducer.currentUser);
 	const dispatch = UseAppDispach();
+
+	const readCarQunatity = useAppSelector(
+		(state) => state.myReducer.totalQuantity,
+	);
+
+	console.log(readCarQunatity);
 
 	return (
 		<Container>
@@ -29,10 +36,13 @@ const Header = () => {
 				<Icon>
 					<BsSearch />
 				</Icon>
-				<Icon>
-					<AiOutlineShoppingCart />
-					<Count>0</Count>
-				</Icon>
+				<Link to='/cart'>
+					<Icon>
+						<AiOutlineShoppingCart />
+						<Count>{readCarQunatity}</Count>
+					</Icon>
+				</Link>
+
 				{userData?.name ? (
 					<NavLink
 						onClick={() => {

@@ -25,6 +25,12 @@ const SinglePage = () => {
 
 	console.log(getData);
 
+	const calculateTotal = (items: any) =>
+		items.reduce(
+			(ack: number, item: any) => ack + item.cartQuantity * item.price,
+			0,
+		);
+
 	return (
 		<Container>
 			<First>
@@ -66,6 +72,7 @@ const SinglePage = () => {
 						Add To Cart
 					</MainButton>
 				</Holder>
+				<div>TotalPrice : {calculateTotal(readCart)}</div>
 
 				<DescHold>Description</DescHold>
 				<br />

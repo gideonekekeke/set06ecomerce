@@ -47,18 +47,34 @@ const ReduxState = createSlice({
 					cartQuantity: 1,
 				});
 			}
-
+			//
 			state.totalQuantity += 1;
-			state.totalPrice +=
-				// state.cart[check].cartQuantity * state.cart[check].price;
-				state.totalPrice = state.cart.reduce(
-					(accc, next) => accc + next.cartQuantity * accc + next.price,
-					0,
-				);
+			// state.totalPrice +=
+			// state.cart[check].cartQuantity * state.cart[check].price;
+			// state.totalPrice = state.cart.reduce(
+			// (accc, next) => accc + next.cartQuantity * next.price,
+			// 0,
+			// );
+		},
+
+		removeFromCart: (state, { payload }: PayloadAction<CartData>) => {
+			const check = state.cart.findIndex((el) => el._id === payload._id);
+
+			if (state.cart[check].cartQuantity > 1) {
+				state.cart[check].cartQuantity -= 1;
+			} else {
+				state.cart = state.cart.filter((el) => el._id !== payload._id);
+			}
+
+			state.totalQuantity -= 1;
+			// ;
+
+			// console.log("this is filter", check);
 		},
 	},
 });
 
-export const { loginUser, logoutUser, addToCart } = ReduxState.actions;
+export const { loginUser, logoutUser, addToCart, removeFromCart } =
+	ReduxState.actions;
 
 export default ReduxState.reducer;

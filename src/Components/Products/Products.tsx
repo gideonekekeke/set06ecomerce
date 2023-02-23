@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { AiFillStar } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";

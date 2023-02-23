@@ -1,7 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { addToCart, removeFromCart } from "../Global/ReduxState";
+import { UseAppDispach, useAppSelector } from "../Global/Store";
 
 const CartPage = () => {
+	const readCart = useAppSelector((state) => state.myReducer.cart);
+	const dispatch = UseAppDispach();
 	return (
 		<Container>
 			<Holder>
@@ -11,34 +15,50 @@ const CartPage = () => {
 				<br />
 				<br />
 				<MainHold>
-					<First>
-						<ImageHolder>
-							<Image />
-							<TextHold>
-								<span>zdfj</span>
-								<br />
-								<br />
-								<br />
-								<br />
-								<br />
-								<div
-									style={{
-										display: "flex",
-										justifyContent: "space-between",
-										alignItems: "center",
-									}}>
-									<Price>In Stock</Price>
-									<div>Remove</div>
-								</div>
-							</TextHold>
-						</ImageHolder>
-						<ButtonHold>
-							<But>-</But>
-							<Count>0</Count>
-							<But style={{ marginLeft: "20px" }}>+</But>
-						</ButtonHold>
-						<Price>$30.00</Price>
-					</First>
+					<div>
+						{readCart?.map((props) => (
+							<First>
+								<ImageHolder>
+									<Image />
+									<TextHold>
+										<span>zdfj</span>
+										<br />
+										<br />
+										<br />
+										<br />
+										<br />
+										<div
+											style={{
+												display: "flex",
+												justifyContent: "space-between",
+												alignItems: "center",
+											}}>
+											<Price>In Stock</Price>
+											<div>Remove</div>
+										</div>
+									</TextHold>
+								</ImageHolder>
+								<ButtonHold>
+									<But
+										onClick={() => {
+											dispatch(removeFromCart(props));
+										}}>
+										-
+									</But>
+									<Count>{props.cartQuantity}</Count>
+									<But
+										onClick={() => {
+											dispatch(addToCart(props));
+										}}
+										style={{ marginLeft: "20px" }}>
+										+
+									</But>
+								</ButtonHold>
+								<Price>$30.00</Price>
+							</First>
+						))}
+					</div>
+
 					<Second>
 						<h4 style={{ color: "gray" }}>Order Summary</h4>
 						<SubHold>
@@ -135,6 +155,7 @@ const First = styled.div`
 	width: 800px;
 	border-right: 1px solid silver;
 	margin-right: 20px;
+	margin-bottom: 20px;
 	/* align-items: center; */
 `;
 const Second = styled.div`
